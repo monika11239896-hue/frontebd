@@ -1,0 +1,113 @@
+body {
+  background-color: #ffffff;
+  font-size: 14px;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.page-title {
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.page-subtitle {
+  font-size: 13px;
+  color: #6c757d;
+}
+
+.card {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+}
+
+.filter-card label {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.table thead th {
+  background-color: #0d6efd;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  position: relative;
+}
+
+.table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.badge-ecu {
+  background-color: #e7f1ff;
+  color: #0d6efd;
+  font-weight: 500;
+}
+
+.badge-channel {
+  background-color: #eaf7ee;
+  color: #198754;
+  font-weight: 500;
+}
+
+.action-btn {
+  border: none;
+  background: transparent;
+  padding: 4px 6px;
+  color: #495057;
+}
+.table-responsive {
+  min-height: 350px;
+}
+.action-btn:hover {
+  background-color: #e9ecef;
+  border-radius: 6px;
+}
+
+.table-info {
+  font-size: 13px;
+  color: #6c757d;
+}
+
+.filter-icon {
+  font-size: 14px;
+  margin-left: 6px;
+  cursor: pointer;
+  color: #ffffff;
+}
+
+.filter-icon:hover {
+  color: #000;
+}
+
+.filter-dropdown {
+  width: 240px;
+}
+
+.filter-list {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.filter-item {
+  padding: 4px 6px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.filter-item:hover {
+  background-color: #f1f3f5;
+}
+.message-link {
+  color: #0d6efd;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.message-link:hover {
+  text-decoration: underline;
+}

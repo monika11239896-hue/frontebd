@@ -1,0 +1,197 @@
+/* Message Card */
+.message-block {
+  background: #ffffff;
+  border-left: 5px solid #0d6efd;
+  transition: all 0.2s ease;
+}
+
+.message-block.collapsed .collapsible-body {
+  display: none;
+}
+
+.message-block:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Message Header */
+.message-block .collapsible-header {
+  cursor: pointer;
+  background: #f8f9fa;
+  padding: 10px 12px;
+  border-radius: 6px;
+}
+
+/* Signal Card */
+.signal-block {
+  background: #f9fafb;
+  border-left: 4px solid #20c997;
+}
+
+.signal-block.collapsed .collapsible-body {
+  display: none;
+}
+
+/* Signal Header */
+.signal-block .collapsible-header {
+  background: #eefdf7;
+  padding: 8px 10px;
+  border-radius: 6px;
+}
+
+/* Buttons */
+.toggle-msg,
+.toggle-sig {
+  font-size: 14px;
+  text-decoration: none;
+}
+
+/* Summary text */
+.signal-summary {
+  font-size: 12px;
+  color: #6c757d;
+}
+
+/* Sticky Save Button */
+.sticky-actions {
+  position: sticky;
+  bottom: 0;
+  background: white;
+  padding: 10px;
+  border-top: 1px solid #ddd;
+  z-index: 10;
+}
+
+/* === PAGE LAYOUT === */
+.body-container {
+  max-width: 1100px;
+  margin: auto;
+}
+
+/* === SIGNAL CARD === */
+.signal-block {
+  background: #ffffff;
+  border-left: 5px solid #198754;
+  transition: all 0.2s ease;
+}
+
+.signal-block.collapsed .collapsible-body {
+  display: none;
+}
+
+.signal-block:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+/* === SIGNAL HEADER === */
+.signal-block .collapsible-header {
+  background: #f1fdf6;
+  padding: 10px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* === SIGNAL TITLE === */
+.sig-title {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* === GROUP SECTIONS === */
+.section-box {
+  background: #f8f9fa;
+  border-radius: 6px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+/* === VALUE DESC === */
+.kvPairs div {
+  align-items: center;
+}
+
+/* === STICKY SAVE === */
+.sticky-footer {
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  padding: 12px;
+  border-top: 1px solid #ddd;
+  text-align: right;
+  z-index: 10;
+}
+
+.sender-ecu-list,
+.receiver-ecu-list {
+  background: #fafafa;
+  height: 70px;
+}
+
+/* .sender-ecu-list .form-check:hover,
+.receiver-ecu-list label:hover {
+  background: #f1f1f1;
+  border-radius: 4px;
+  cursor: pointer;
+  padding-left: 4px;
+} */
+.receiver-ecu-list {
+  background: #fafafa;
+}
+
+body {
+  font-family: Arial;
+  background: #f4f4f4;
+}
+.container {
+  background: #fff;
+  padding: 2px;
+  border-radius: 8px;
+  margin-bottom: 2px;
+}
+.signal {
+  border: 1px solid #ddd;
+  padding: 15px;
+  border-radius: 6px;
+  margin-top: 15px;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+td {
+  padding: 6px;
+}
+input,
+select {
+  width: 95%;
+  padding: 6px;
+}
+button {
+  padding: 8px 14px;
+  background: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+button:hover {
+  background: #0056d0;
+}
+.inline-error {
+  color: red;
+  font-size: 13px;
+  display: none;
+}
+#messageSelect {
+  margin: 15px;
+}
+.body-container {
+  padding: 10px 35px;
+}
+#popupModal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
+}

@@ -1,0 +1,54 @@
+<!-- PAGE HEADER -->
+<div class="container-fluid px-3">
+  <div
+    class="d-flex justify-content-between align-items-center py-3 border-bottom"
+  >
+    <div>
+      <h4 class="mb-0">Signal Configuration</h4>
+      <small class="text-muted"
+        >Define signals for the selected CAN message</small
+      >
+    </div>
+
+    <!-- Optional future actions -->
+    <!--
+    <button class="btn btn-outline-secondary btn-sm" id="backToMessages">
+      ← Back to Messages
+    </button>
+    -->
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="container mt-4" style="max-width: 960px">
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h5 class="mb-3">Add Signals</h5>
+
+      <form id="signalsForm">
+        <!-- SIGNAL CARDS -->
+        <div id="signalsContainer" class="mb-3"></div>
+
+        <!-- ADD SIGNAL -->
+        <div class="mb-4">
+          <button
+            type="button"
+            class="btn btn-outline-secondary btn-sm"
+            id="addSignalBtn"
+          >
+            + Add Signal
+          </button>
+        </div>
+
+        <!-- STICKY SAVE BAR -->
+        <div
+          class="sticky-footer border-top pt-3 d-flex justify-content-end bg-white"
+        >
+          <button type="submit" class="btn btn-success btn-sm px-4">
+            Save Signals
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

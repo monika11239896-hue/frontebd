@@ -1,0 +1,277 @@
+/* ===============================
+   Root Variables
+   =============================== */
+:root {
+  --primary-color: #4a66a3;
+  --bg-light: #f8f9fa;
+  --bg-white: #ffffff;
+  --text-dark: #1f1f1f;
+  --text-muted: #7b7b7b;
+  --border-soft: #e6e6e6;
+  --btn-soft-bg: #f1f1f1;
+  --top-strip-bg: #262626;
+}
+
+/* ===============================
+   Body & Global
+   =============================== */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Segoe UI", sans-serif;
+  background-color: #f7f7f7;
+  color: var(--text-dark);
+}
+
+/* ===============================
+   Top strip / navbar
+   =============================== */
+.top-strip {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  height: 40px;
+  background-color: var(--top-strip-bg);
+  color: #fff;
+  font-weight: bold;
+  z-index: 1000;
+}
+
+.top-strip a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.top-strip a:hover {
+  text-decoration: underline;
+}
+
+/* ===============================
+   Container & Layout
+   =============================== */
+.container-fluid {
+  width: 100%;
+  padding: 0 20px;
+}
+
+.main-content-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ===============================
+   Content Panels
+   =============================== */
+.can_channel {
+  flex: 1 1 60%;
+  min-width: 300px;
+  max-width: 700px;
+  background-color: var(--bg-white);
+  padding: 20px;
+  border: 1px solid var(--border-soft);
+  border-radius: 6px;
+}
+
+.right-panel {
+  flex: 0 0 300px;
+  min-width: 250px;
+  background-color: var(--bg-light);
+  padding: 20px;
+  border: 1px solid var(--border-soft);
+  border-radius: 6px;
+}
+
+/* ===============================
+   Header / Meta info
+   =============================== */
+header {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.meta-block div {
+  margin-bottom: 4px;
+  font-size: 0.95rem;
+}
+
+#metaDate {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* ===============================
+   Buttons
+   =============================== */
+.btn-soft {
+  background-color: var(--btn-soft-bg);
+  border: 1px solid #dcdcdc;
+  color: var(--text-dark);
+}
+
+button.btn-outline-secondary {
+  min-width: 120px;
+}
+
+/* ===============================
+   ECU Groups
+   =============================== */
+.ecu-group {
+  border-bottom: 1px solid var(--border-soft);
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+}
+
+.ecu-group h6 {
+  margin: 0;
+  font-weight: 600;
+}
+
+.group-actions {
+  font-size: 0.9rem;
+}
+
+.group-actions .action-link {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+.group-actions .action-link:hover {
+  text-decoration: underline;
+}
+
+.sep {
+  margin: 0 5px;
+  color: #8fa2d1;
+}
+
+.delete-item {
+  color: #dc3545;
+  font-size: 0.85rem;
+  text-decoration: none;
+}
+
+.delete-item:hover {
+  text-decoration: underline;
+}
+
+/* Inputs inside ECU group */
+.ecu-group input.form-control {
+  min-width: 160px;
+}
+
+.ecu-group button {
+  white-space: nowrap;
+}
+
+/* ===============================
+   Responsive
+   =============================== */
+@media (max-width: 992px) {
+  .main-content-row {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .can_channel,
+  .right-panel {
+    flex: 1 1 100%;
+    max-width: 100%;
+    min-width: 100%;
+  }
+
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .btn-outline-secondary,
+  .ecu-group button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .content-inner {
+    padding: 12px;
+  }
+
+  .ecu-group h6 {
+    font-size: 0.95rem;
+  }
+
+  .group-actions {
+    font-size: 0.8rem;
+  }
+}
+
+.chevron {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.chevron.rotate {
+  transform: rotate(90deg);
+}
+
+.collapsed .collapsible-body {
+  display: none;
+}
+
+.collapsible-header {
+  cursor: pointer;
+}
+
+.collapsible-header:hover {
+  background-color: #f8f9fa;
+}
+.message-block .signal-summary {
+  display: none;
+}
+
+.message-block.collapsed .signal-summary {
+  display: block;
+}
+
+.message-block.collapsed .collapsible-body {
+  display: none;
+}
+
+.app-body {
+  background-color: #f5f7fa;
+}
+
+.card {
+  border-radius: 10px;
+}
+
+.card-header {
+  background-color: #f8f9fb;
+  font-weight: 600;
+}
+
+.btn {
+  border-radius: 6px;
+}
+
+#canChannelList > div,
+#ecuList > div {
+  padding: 10px;
+  border-radius: 6px;
+  background: #ffffff;
+  margin-bottom: 8px;
+  border: 1px solid #e5e7eb;
+}
+.card-header .btn {
+  padding: 2px 8px;
+  font-size: 0.75rem;
+}

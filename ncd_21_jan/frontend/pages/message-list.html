@@ -1,0 +1,138 @@
+<div class="container-fluid px-4 py-4">
+  <!-- Page Header -->
+  <div class="page-header mb-4">
+    <div>
+      <h4 class="page-title">Message List</h4>
+      <p class="page-subtitle">List of all configured CAN messages</p>
+    </div>
+    <button class="btn btn-primary" id="addMessageBtn">
+      <i class="bi bi-plus-circle"></i> Add Message
+    </button>
+  </div>
+
+  <!-- Filters -->
+  <div class="mb-3">
+    <input
+      type="text"
+      id="globalSearch"
+      class="form-control"
+      placeholder="Search messages by ID, name, ECU, channel"
+    />
+  </div>
+
+  <!-- Table -->
+  <div class="card table-card">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Message Name</th>
+
+            <!-- Sender ECU Filter -->
+            <th>
+              Sender ECU
+              <div class="dropdown d-inline">
+                <i
+                  class="bi bi-funnel filter-icon"
+                  data-bs-toggle="dropdown"
+                ></i>
+                <div class="dropdown-menu filter-dropdown p-2">
+                  <input
+                    type="text"
+                    class="form-control form-control-sm mb-2"
+                    id="ecuFilterSearch"
+                    placeholder="Search ECU"
+                  />
+                  <div
+                    id="ecuFilterList"
+                    class="filter-list"
+                    style="z-index: 100"
+                  ></div>
+                </div>
+              </div>
+            </th>
+
+            <!-- Channel Filter -->
+            <th>
+              CAN Channel
+              <div class="dropdown d-inline">
+                <i
+                  class="bi bi-funnel filter-icon"
+                  data-bs-toggle="dropdown"
+                ></i>
+                <div class="dropdown-menu filter-dropdown p-2">
+                  <input
+                    type="text"
+                    id="channelFilterSearch"
+                    style="z-index: 100"
+                    class="form-control form-control-sm mb-2"
+                    placeholder="Search Channel"
+                  />
+                  <div id="channelFilterList" class="filter-list"></div>
+                </div>
+              </div>
+            </th>
+
+            <th class="text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="messageTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="d-flex justify-content-between align-items-center mt-3">
+    <span id="tableInfo" class="table-info"></span>
+    <ul class="pagination mb-0" id="pagination"></ul>
+  </div>
+</div>
+
+<div class="modal fade" id="messageViewModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="messageViewTitle">Message Details</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Message info -->
+        <div class="row mb-3">
+          <div class="col-md-3">
+            <strong>ID:</strong> <span id="vMsgId"></span>
+          </div>
+          <div class="col-md-3">
+            <strong>ECU:</strong> <span id="vMsgEcu"></span>
+          </div>
+          <div class="col-md-3">
+            <strong>Channel:</strong> <span id="vMsgChannel"></span>
+          </div>
+          <div class="col-md-3">
+            <strong>Total Signals:</strong> <span id="vMsgSignalCount"></span>
+          </div>
+        </div>
+
+        <!-- Signals table -->
+        <div class="table-responsive">
+          <table class="table table-sm table-striped">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Start Bit</th>
+                <th>Length</th>
+                <th>Unit</th>
+              </tr>
+            </thead>
+            <tbody id="vSignalTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
