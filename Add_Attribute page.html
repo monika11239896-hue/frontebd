@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Attribute</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container mt-5">
+  <div class="card shadow">
+    <div class="card-header bg-primary text-white">
+      <h5 class="mb-0">Add Attribute</h5>
+    </div>
+
+    <div class="card-body">
+
+      <!-- Attribute Type -->
+      <div class="mb-3">
+        <label class="form-label">Select Attribute Type</label>
+        <select class="form-select" id="attributeType">
+          <option value="">-- Select --</option>
+          <option value="msg">Message</option>
+          <option value="signal">Signal</option>
+          <option value="ecu">ECU</option>
+          <option value="dbc">DBC</option>
+        </select>
+      </div>
+
+      <!-- Object dropdown -->
+      <div class="mb-3 d-none" id="objectDiv">
+        <label class="form-label">Select Item</label>
+        <select class="form-select" id="objectSelect"></select>
+      </div>
+
+      <!-- Dynamic attributes -->
+      <div id="attributeFields"></div>
+
+      <button class="btn btn-success mt-3">Save</button>
+
+    </div>
+  </div>
+</div>
+
+<script>
+const attributeType = document.getElementById("attributeType");
+const objectDiv = document.getElementById("objectDiv");
+const objectSelect = document.getElementById("objectSelect");
+const attributeFields = document.getElementById("attributeFields");
+
+/* ---------------- DATA ---------------- */
+
+const data = {
+  msg: {
+    objects: ["Msg_EngineData", "Msg_Speed", "Msg_Diag"],
+    attributes: [
+      {
+    name: "NmMessage",
+    type: "ENUM",
+    default: "No",
+    values: ["No", "Yes"]
+  },
+
+  {
+    name: "NmAsrMessage",
+    type: "ENUM",
+    default: "No",
+    values: ["Select", "No", "Yes"]
+  },
+
+  {
+    name: "MessageTimeout",
+    type: "INT",
+    default: 500,
+    min: 0,
+    max: 65535
+  },
+
+  {
+    name: "GenMsgStartDelayTime",
+    type: "INT",
+    default: 0,
+    min: 0,
+    max: 0
+  },
+
+  {
+    name: "GenMsgSendType",
+    type: "ENUM",
+    default: "Cyclic",
+    values: [
+      "Cyclic",
+      "Event",
+      "NotUsed",
+      "NotUsed",
+      "NotUsed",
+      "NotUsed",
+      "NotUsed",
+      "IfActive",
+      "NoMsgSendType",
+      "NotUsed"
+    ]
+  },
+
+  {
+    name: "GenMsgNrOfRepetition",
+    type: "INT",
+    default: 0,
+    min: 0,
+    max: 0
+  },
+
+  {
+    name: "GenMsgILSupport",
+    type: "ENUM",
+    default: "Yes",
+    values: ["No", "Yes"]
+  },
+
+  {
+    name: "GenMsgDelayTime",
+    type: "INT",
+    default: 0,
+    min: 0,
+    max: 100
+  },
+
+  {
+    name: "GenMsgCycleTimeFast",
+    type: "INT",
+    default: 0,
+    min: 0,
+    max: 80
+  },
+
+  {
+    name: "GenMsgCycleTime",
+    type: "INT",
+    default: 0,
+    min: 0,
+    max: 300
+  },
+
+  {
+    name: "DiagUudtResponse",
+    type: "ENUM",
+    default: "false",
+    values: ["false", "true"]
+  },
+
+  {
+    name: "DiagUsdtResponse",
+    type: "ENUM",
+    default: "false",
+    values: ["false", "true"]
+  },
+
+  {
+    name: "DiagState",
+    type: "ENUM",
+    default: "No",
+    values: ["No", "Yes"]
+  },
+
+  {
+    name: "DiagResponse",
+    type: "ENUM",
+    default: "No",
+    values: ["No", "Yes"]
+  },
+
+  {
+    name: "DiagRequest",
+    type: "ENUM",
+    default: "No",
+    values: ["No", "Yes"]
+  },
+
+  {
+    name: "MsgType",
+    type: "ENUM",
+    default: "Application",
+    values: ["Application", "NM", "NMH"]
+  }
+    ]
+  },
+
+  signal: {
+    objects: ["Sig_Speed", "Sig_RPM", "Sig_Temp"],
+    attributes: [
+      { name: "Remarks", type: "STRING", default: "null" },
+
+  { name: "NWM_WakeupAllowed", type: "ENUM", default: "No", values: ["No", "Yes"] },
+
+  { name: "GenSigStartValue", type: "INT", default: 0, min: 0, max: 0 },
+
+  {
+    name: "GenSigSendType",
+    type: "ENUM",
+    default: "Cyclic",
+    values: [
+      "Cyclic",
+      "OnWrite",
+      "OnWriteWithRepetition",
+      "OnChange",
+      "OnChangeWithRepetition",
+      "IfActive",
+      "IfActiveWithRepetition",
+      "NoSigSendType",
+      "NotUsed",
+      "NotUsed",
+      "NotUsed",
+      "NotUsed",
+      "NotUsed"
+    ]
+  },
+
+  { name: "GenSigInactiveValue", type: "INT", default: 0, min: 0, max: 0 },
+
+  {
+    name: "GenSigEnvVarType",
+    type: "ENUM",
+    default: "undef",
+    values: ["int", "float", "undef"]
+  },
+
+  { name: "GenSigCycleTimeActive", type: "INT", default: 0, min: 0, max: 0 },
+
+  { name: "GenSigCycleTime", type: "INT", default: 0, min: 0, max: 0 },
+
+  { name: "GenSigTimeoutTime_IVI", type: "INT", default: 500, min: 0, max: 65535 },
+
+  { name: "GenSigTimeoutMSignalAttributeIVI", type: "INT", default: 500, min: 0, max: 65535 },
+
+  { name: "GenSigTimeoutTime_HU_Mid_X445", type: "INT", default: 500, min: 0, max: 65535 },
+
+  { name: "GenSigTimeoutTime_HU_High_X445", type: "INT", default: 500, min: 0, max: 65535 },
+
+  { name: "GenSigTimeoutMSignalAttributeHU_Mid_X445", type: "INT", default: 500, min: 0, max: 65535 },
+
+  { name: "GenSigTimeoutMSignalAttributeHU_High_X445", type: "INT", default: 500, min: 0, max: 65535 },
+
+  { name: "GenSigTimeoutMSignalAttributeHU_A", type: "INT", default: 500, min: 0, max: 65535 },
+
+  { name: "GenSigTimeoutMSignalAttributeHU_B", type: "INT", default: 500, min: 0, max: 65535 },
+
+  { name: "GenSigTimeoutMSignalAttributeHU_High_X451", type: "INT", default: 500, min: 0, max: 65535 },
+
+  { name: "GenSigTimeoutMSignalAttributeHU_Mid_X451", type: "INT", default: 500, min: 0, max: 65535 },
+
+  { name: "GenSigTimeoutTime_BCM_Mid", type: "INT", default: 500, min: 0, max: 65535 },
+
+  { name: "GenSigTimeoutTime_HU_A", type: "INT", default: 500, min: 0, max: 65535 },
+
+  { name: "GenSigTimeoutTime_HU_B", type: "INT", default: 500, min: 0, max: 65535 },
+
+  { name: "GenSigTimeoutTime_HU_High_X451", type: "INT", default: 500, min: 0, max: 65535 },
+
+  { name: "GenSigTimeoutTime_HU_Mid_X451", type: "INT", default: 500, min: 0, max: 65535 }
+    ]
+  },
+
+  ecu: {
+    objects: ["ECU_BCM", "ECU_HU", "ECU_TCU"],
+    attributes: [
+      {
+    name: "NodeLayerModules",
+    type: "STRING",
+    default: "null"
+  },
+
+  {
+    name: "NmStationAddress",
+    type: "INT",
+    default: 0,
+    min: 0,
+    max: 63
+  },
+
+  {
+    name: "NmNode",
+    type: "ENUM",
+    default: "No",
+    values: ["No", "Yes"]
+  },
+
+  {
+    name: "NmCAN",
+    type: "INT",
+    default: 3,
+    min: 1,
+    max: 3
+  },
+
+  {
+    name: "NmAsrNodeIdentifier",
+    type: "HEX",
+    default: 2,
+    min: 0,
+    max: 255
+  },
+
+  {
+    name: "NmAsrNode",
+    type: "ENUM",
+    default: "<n.a.>",
+    values: ["<n.a.>", "No", "Yes"]
+  },
+
+  {
+    name: "NmAsrCanMsgReducedTime",
+    type: "INT",
+    default: 50,
+    min: 1,
+    max: 65535
+  },
+
+  {
+    name: "NmAsrCanMsgCycleOffs",
+    type: "INT",
+    default: 0,
+    min: 0,
+    max: 65535
+  },
+
+  {
+    name: "ILUsed",
+    type: "ENUM",
+    default: "No",
+    values: ["Yes", "No"]
+  },
+
+  {
+    name: "ECU",
+    type: "STRING",
+    default: ""
+  }]
+  },
+
+  dbc: {
+    objects: ["MainDBC", "DiagDBC"],
+    attributes: [
+      {
+    name: "NmType",
+    type: "STRING",
+    default: "NmAsr"
+  },
+
+  {
+    name: "NmMessageCount",
+    type: "INT",
+    default: 128,
+    min: 0,
+    max: 128
+  },
+
+  {
+    name: "NmBaseAddress",
+    type: "HEX",
+    default: 0,
+    min: 0,
+    max: 0
+  },
+
+  {
+    name: "NmAsrWaitBusSleepTime",
+    type: "INT",
+    default: 500,
+    min: 1,
+    max: 65535
+  },
+
+  {
+    name: "NmAsrTimeoutTime",
+    type: "INT",
+    default: 1000,
+    min: 1,
+    max: 65535
+  },
+
+  {
+    name: "NmAsrRepeatMessageTime",
+    type: "INT",
+    default: 1500,
+    min: 1,
+    max: 65535
+  },
+
+  {
+    name: "NmAsrMessageCount",
+    type: "INT",
+    default: 128,
+    min: 128,
+    max: 128
+  },
+
+  {
+    name: "NmAsrCanMsgCycleTime",
+    type: "INT",
+    default: 200,
+    min: 1,
+    max: 65535
+  },
+
+  {
+    name: "NmAsrBaseAddress",
+    type: "HEX",
+    default: 1280,
+    min: 0,
+    max: 2047
+  },
+
+  {
+    name: "Manufacturer",
+    type: "STRING",
+    default: "TML"
+  },
+
+  {
+    name: "ILTxTimeout",
+    type: "INT",
+    default: 500,
+    min: 0,
+    max: 65535
+  },
+
+  {
+    name: "GenEnvVarPrefix",
+    type: "STRING",
+    default: "Env"
+  },
+
+  {
+    name: "GenEnvVarEndingSnd",
+    type: "STRING",
+    default: "_"
+  },
+
+  {
+    name: "GenEnvVarEndingDsp",
+    type: "STRING",
+    default: "Dsp_"
+  },
+
+  {
+    name: "DBName",
+    type: "STRING",
+    default: "TestDatabase"
+  },
+
+  {
+    name: "BusType",
+    type: "STRING",
+    default: ""
+  },
+
+  {
+    name: "Baudrate",
+    type: "INT",
+    default: 500000,
+    min: 0,
+    max: 1000000
+  },
+
+  {
+    name: "SystemSignalLongSymbol",
+    type: "STRING",
+    default: ""
+  }]
+  }
+};
+
+/* ---------------- EVENTS ---------------- */
+
+attributeType.addEventListener("change", () => {
+  const type = attributeType.value;
+  attributeFields.innerHTML = "";
+  objectSelect.innerHTML = "";
+
+  if (!type) {
+    objectDiv.classList.add("d-none");
+    return;
+  }
+
+  objectDiv.classList.remove("d-none");
+
+  // Populate object dropdown
+  data[type].objects.forEach(obj => {
+    const option = document.createElement("option");
+    option.textContent = obj;
+    option.value = obj;
+    objectSelect.appendChild(option);
+  });
+
+  renderAttributes(data[type].attributes);
+});
+
+/* ---------------- FUNCTIONS ---------------- */
+
+function renderAttributes(attributes) {
+  attributeFields.innerHTML = "";
+
+  attributes.forEach(attr => {
+    const div = document.createElement("div");
+    div.className = "mb-3";
+
+    const label = document.createElement("label");
+    label.className = "form-label";
+    label.textContent = attr.name;
+
+    let field;
+if (attr.type === "HEX") {
+  field = document.createElement("input");
+  field.type = "text";
+  field.className = "form-control";
+  field.placeholder = "0x00";
+}
+
+    if (attr.type === "ENUM") {
+      field = document.createElement("select");
+      field.className = "form-select";
+
+      attr.values.forEach(v => {
+        const option = document.createElement("option");
+        option.textContent = v;
+        option.value = v;
+        field.appendChild(option);
+      });
+
+    } else {
+      field = document.createElement("input");
+      field.className = "form-control";
+      field.type = attr.type === "INT" ? "number" : "text";
+
+      if (attr.min !== undefined) field.min = attr.min;
+      if (attr.max !== undefined) field.max = attr.max;
+    }
+
+    div.appendChild(label);
+    div.appendChild(field);
+    attributeFields.appendChild(div);
+  });
+}
+
+
+</script>
+</body>
+</html>

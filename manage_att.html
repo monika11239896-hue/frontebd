@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Manage Attributes</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+<div class="container mt-5">
+  <div class="card shadow">
+    <div class="card-header bg-dark text-white">
+      <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center">
+        <h5 class="mb-0">Manage Attributes</h5>
+
+        <div class="d-flex gap-2">
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            placeholder="Search attribute..."
+            id="searchInput"
+          >
+
+          <select class="form-select form-select-sm" id="filterType">
+            <option value="all">ALL</option>
+            <option value="msg">Message</option>
+            <option value="signal">Signal</option>
+            <option value="ecu">ECU</option>
+            <option value="dbc">DBC</option>
+          </select>
+
+          <button class="btn btn-success btn-sm" onclick="openModal()">+ Add Attribute</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <table class="table table-bordered table-hover align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Attribute Name</th>
+            <th>Data Type</th>
+            <th>Default</th>
+            <th>Constraints</th>
+            <th>Applies To</th>
+            <th width="140">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="attributeTable"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal fade" id="attributeModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Add / Edit Attribute</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <input type="hidden" id="editIndex">
+        <input type="hidden" id="editCategory">
+
+        <div class="row g-3">
+          <div class="col-md-4">
+            <label class="form-label">Attribute Name</label>
+            <input class="form-control" id="attrName">
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label">Applies To</label>
+            <select class="form-select" id="attrCategory">
+              <option value="msg">Message</option>
+              <option value="signal">Signal</option>
+              <option value="ecu">ECU</option>
+              <option value="dbc">DBC</option>
+            </select>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label">Data Type</label>
+            <select class="form-select" id="attrType" onchange="renderTypeFields()">
+              <option value="INT">INT</option>
+              <option value="ENUM">ENUM</option>
+              <option value="STRING">STRING</option>
+              <option value="HEX">HEX</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="typeFields" class="mt-3"></div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-primary" onclick="saveAttribute()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+/* ---------------- DATA ---------------- */
+
+const attributes = {
+  msg: [],
+  signal: [],
+  ecu: [],
+  dbc: []
+};
+
+const modal = new bootstrap.Modal(document.getElementById("attributeModal"));
+
+/* ---------------- FILTER & SEARCH ---------------- */
+
+document.getElementById("filterType").addEventListener("change", renderTable);
+document.getElementById("searchInput").addEventListener("input", renderTable);
+
+/* ---------------- TABLE ---------------- */
+
+function renderTable() {
+  const filter = document.getElementById("filterType").value;
+  const search = document.getElementById("searchInput").value.toLowerCase();
+  const tbody = document.getElementById("attributeTable");
+
+  tbody.innerHTML = "";
+
+  const categories = filter === "all"
+    ? Object.keys(attributes)
+    : [filter];
+
+  categories.forEach(cat => {
+    attributes[cat].forEach((attr, index) => {
+      if (!attr.name.toLowerCase().includes(search)) return;
+
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${attr.name}</td>
+        <td>${attr.type}</td>
+        <td>${attr.default ?? ""}</td>
+        <td>${getConstraints(attr)}</td>
+        <td>${cat.toUpperCase()}</td>
+        <td>
+          <button class="btn btn-sm btn-warning"
+            onclick="editAttribute('${cat}', ${index})">Edit</button>
+          <button class="btn btn-sm btn-danger"
+            onclick="deleteAttribute('${cat}', ${index})">Delete</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+  });
+}
+
+function getConstraints(attr) {
+  if (attr.type === "INT" || attr.type === "HEX")
+    return `${attr.min ?? ""} - ${attr.max ?? ""}`;
+  if (attr.type === "ENUM")
+    return attr.values.join(", ");
+  return "-";
+}
+
+/* ---------------- MODAL ---------------- */
+
+function openModal() {
+  document.getElementById("editIndex").value = "";
+  document.getElementById("attrName").value = "";
+  document.getElementById("attrCategory").value = "msg";
+  document.getElementById("attrType").value = "INT";
+  renderTypeFields();
+  modal.show();
+}
+
+function renderTypeFields(attr = {}) {
+  const type = document.getElementById("attrType").value;
+  const div = document.getElementById("typeFields");
+
+  if (type === "INT" || type === "HEX") {
+    div.innerHTML = `
+      <div class="row g-3">
+        <div class="col">
+          <label class="form-label">Default</label>
+          <input class="form-control" id="defVal" value="${attr.default ?? ""}">
+        </div>
+        <div class="col">
+          <label class="form-label">Min</label>
+          <input class="form-control" id="minVal" value="${attr.min ?? ""}">
+        </div>
+        <div class="col">
+          <label class="form-label">Max</label>
+          <input class="form-control" id="maxVal" value="${attr.max ?? ""}">
+        </div>
+      </div>`;
+  }
+
+  if (type === "STRING") {
+    div.innerHTML = `
+      <label class="form-label">Default Value</label>
+      <input class="form-control" id="defVal" value="${attr.default ?? ""}">
+    `;
+  }
+
+  if (type === "ENUM") {
+    div.innerHTML = `
+      <label class="form-label">Enum Values</label>
+      <div id="enumList"></div>
+      <button class="btn btn-sm btn-outline-primary mt-2" onclick="addEnum()">+ Add Value</button>
+    `;
+    (attr.values || []).forEach(v => addEnum(v));
+  }
+}
+
+function addEnum(value = "") {
+  document.getElementById("enumList").insertAdjacentHTML("beforeend", `
+    <div class="input-group mb-2">
+      <input class="form-control enumVal" value="${value}">
+      <button class="btn btn-outline-danger" onclick="this.parentElement.remove()">✕</button>
+    </div>
+  `);
+}
+
+/* ---------------- SAVE / EDIT / DELETE ---------------- */
+
+function saveAttribute() {
+  const category = document.getElementById("attrCategory").value;
+  const name = document.getElementById("attrName").value;
+  const type = document.getElementById("attrType").value;
+  const index = document.getElementById("editIndex").value;
+
+  let attr = { name, type };
+
+  if (type === "INT" || type === "HEX") {
+    attr.default = document.getElementById("defVal").value;
+    attr.min = document.getElementById("minVal").value;
+    attr.max = document.getElementById("maxVal").value;
+  }
+
+  if (type === "STRING") {
+    attr.default = document.getElementById("defVal").value;
+  }
+
+  if (type === "ENUM") {
+    attr.values = [...document.querySelectorAll(".enumVal")].map(e => e.value);
+    attr.default = attr.values[0] || "";
+  }
+
+  if (index === "")
+    attributes[category].push(attr);
+  else
+    attributes[category][index] = attr;
+
+  modal.hide();
+  renderTable();
+}
+
+function editAttribute(category, index) {
+  const attr = attributes[category][index];
+  document.getElementById("editIndex").value = index;
+  document.getElementById("attrName").value = attr.name;
+  document.getElementById("attrCategory").value = category;
+  document.getElementById("attrType").value = attr.type;
+  renderTypeFields(attr);
+  modal.show();
+}
+
+function deleteAttribute(category, index) {
+  if (confirm("Delete this attribute?")) {
+    attributes[category].splice(index, 1);
+    renderTable();
+  }
+}
+
+/* INIT */
+renderTable();
+</script>
+
+</body>
+</html>
